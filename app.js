@@ -740,12 +740,78 @@ function renderDealCard(d) {
 }
 
 function setupDragCard(el) {
+  // Desktop drag
   el.addEventListener('dragstart', e => {
     draggedDeal = el.getAttribute('data-id');
     el.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
   });
   el.addEventListener('dragend', () => el.classList.remove('dragging'));
+
+  // Touch drag для мобильных (iOS/Android не поддерживают HTML5 DnD)
+  let touchStartX, touchStartY, touchClone, touchMoved = false;
+
+  el.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchMoved = false;
+    draggedDeal = el.getAttribute('data-id');
+  }, { passive: true });
+
+  el.addEventListener('touchmove', e => {
+    const dx = Math.abs(e.touches[0].clientX - touchStartX);
+    const dy = Math.abs(e.touches[0].clientY - touchStartY);
+    if (dx < 6 && dy < 6) return; // ещё не начали тащить
+
+    touchMoved = true;
+    e.preventDefault(); // блокируем скролл только при реальном перетаскивании
+
+    // Создаём клон-призрак один раз
+    if (!touchClone) {
+      touchClone = el.cloneNode(true);
+      touchClone.style.cssText = `
+        position:fixed;opacity:0.85;pointer-events:none;z-index:9999;
+        width:${el.offsetWidth}px;border-radius:8px;
+        box-shadow:0 8px 24px rgba(0,0,0,0.3);transform:rotate(2deg);
+        transition:none;
+      `;
+      document.body.appendChild(touchClone);
+      el.classList.add('dragging');
+    }
+
+    const x = e.touches[0].clientX - el.offsetWidth / 2;
+    const y = e.touches[0].clientY - 30;
+    touchClone.style.left = x + 'px';
+    touchClone.style.top  = y + 'px';
+
+    // Подсвечиваем колонку под пальцем
+    document.querySelectorAll('.kanban-cards').forEach(c => c.classList.remove('drag-target'));
+    const target = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+    const col = target?.closest('.kanban-cards');
+    if (col) col.classList.add('drag-target');
+  }, { passive: false });
+
+  el.addEventListener('touchend', e => {
+    if (touchClone) { touchClone.remove(); touchClone = null; }
+    el.classList.remove('dragging');
+    document.querySelectorAll('.kanban-cards').forEach(c => c.classList.remove('drag-target'));
+
+    if (!touchMoved || !draggedDeal) { draggedDeal = null; return; }
+
+    // Определяем целевую колонку
+    const target = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+    const col = target?.closest('.kanban-col');
+    if (col) {
+      const status = col.getAttribute('data-status');
+      if (status) {
+        DB.updateDeal(draggedDeal, { status });
+        DB.addActivity({ type: 'deal', text: `Сделка перемещена в <strong>${t('deal.'+status)}</strong>`, time: 'только что' });
+        renderDeals();
+      }
+    }
+    draggedDeal = null;
+    touchMoved = false;
+  });
 }
 
 function setupDropZone(col, status) {
@@ -756,7 +822,7 @@ function setupDropZone(col, status) {
     col.classList.remove('drag-target');
     if (!draggedDeal) return;
     DB.updateDeal(draggedDeal, { status });
-    DB.addActivity({ type: 'deal', text: `Сделка перемещена в <strong>${status}</strong>`, time: 'только что' });
+    DB.addActivity({ type: 'deal', text: `Сделка перемещена в <strong>${t('deal.'+status)}</strong>`, time: 'только что' });
     renderDeals();
     draggedDeal = null;
   });
