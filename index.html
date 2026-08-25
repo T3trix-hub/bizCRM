@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="shortcut icon" href="favicon.ico">
+<meta name="description" content="BizCRM — CRM для малого бизнеса">
+<meta name="theme-color" content="#0f0f11">
+<title>BizCRM</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect width="36" height="36" rx="10" fill="url(#grad)"/>
+        <path d="M10 24V14l8-4 8 4v10l-8 4-8-4z" stroke="white" stroke-width="1.5" fill="none"/>
+        <path d="M18 10v14M10 14l8 4 8-4" stroke="white" stroke-width="1.5"/>
+        <defs><linearGradient id="grad" x1="0" y1="0" x2="36" y2="36"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+      </svg>
+      <span>BizCRM</span>
+    </div>
+    <h1 class="auth-title" data-i18n="auth.title">Добро пожаловать</h1>
+    <p class="auth-sub" data-i18n="auth.sub">Войдите в свой аккаунт</p>
+    <div class="field">
+      <label data-i18n="auth.login">Логин</label>
+      <input id="auth-login" type="text" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="field">
+      <label data-i18n="auth.password">Пароль</label>
+      <input id="auth-pass" type="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div id="auth-error" class="auth-error hidden" data-i18n="auth.error">Неверный логин или пароль</div>
+    <button id="auth-btn" class="btn btn-primary full" data-i18n="auth.btn">Войти</button>
+    <p class="auth-hint" data-i18n="auth.hint">Демо: admin / admin123</p>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="app hidden">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div class="app-logo">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+          <rect width="36" height="36" rx="10" fill="url(#grad2)"/>
+          <path d="M10 24V14l8-4 8 4v10l-8 4-8-4z" stroke="white" stroke-width="1.5" fill="none"/>
+          <path d="M18 10v14M10 14l8 4 8-4" stroke="white" stroke-width="1.5"/>
+          <defs><linearGradient id="grad2" x1="0" y1="0" x2="36" y2="36"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+        </svg>
+        <span class="app-name">BizCRM</span>
+      </div>
+      <button id="sidebar-close" class="icon-btn sidebar-close-btn" aria-label="Закрыть">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        <span data-i18n="nav.dashboard">Дашборд</span>
+      </a>
+      <a href="#" class="nav-item" data-page="clients">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <span data-i18n="nav.clients">Клиенты</span>
+        <span class="nav-badge" id="clients-count"></span>
+      </a>
+      <a href="#" class="nav-item" data-page="deals">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        <span data-i18n="nav.deals">Сделки</span>
+        <span class="nav-badge" id="deals-count"></span>
+      </a>
+      <a href="#" class="nav-item" data-page="tasks">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        <span data-i18n="nav.tasks">Задачи</span>
+        <span class="nav-badge danger" id="tasks-count"></span>
+      </a>
+      <a href="#" class="nav-item" data-page="calendar">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span data-i18n="nav.calendar">Календарь</span>
+      </a>
+      <a href="#" class="nav-item" data-page="analytics">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span data-i18n="nav.analytics">Аналитика</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">АД</div>
+        <div class="user-details">
+          <div class="user-name">Администратор</div>
+          <div class="user-role" data-i18n="user.role">Руководитель</div>
+        </div>
+      </div>
+      <div class="sidebar-controls">
+        <button id="theme-toggle" class="icon-btn" title="Тема">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+        <button id="lang-toggle" class="icon-btn lang-btn" title="Язык">EN</button>
+        <button id="logout-btn" class="icon-btn" title="Выйти">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- OVERLAY -->
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <header class="topbar">
+      <button id="burger-btn" class="icon-btn burger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-title" id="page-title" data-i18n="nav.dashboard">Дашборд</div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary btn-sm" id="topbar-add-btn" data-i18n="action.add">+ Добавить</button>
+      </div>
+    </header>
+
+    <div class="page-container">
+      <!-- DASHBOARD -->
+      <section id="page-dashboard" class="page active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon clients-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value" id="dash-clients">0</div>
+              <div class="stat-label" data-i18n="dash.clients">Клиентов</div>
+            </div>
+            <div class="stat-trend up">+3</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon deals-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value" id="dash-deals">0</div>
+              <div class="stat-label" data-i18n="dash.deals">Активных сделок</div>
+            </div>
+            <div class="stat-trend up">+2</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon revenue-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 110 7H6"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value" id="dash-revenue">0 ₽</div>
+              <div class="stat-label" data-i18n="dash.revenue">Выручка (мес.)</div>
+            </div>
+            <div class="stat-trend up">+12%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon tasks-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value" id="dash-tasks">0</div>
+              <div class="stat-label" data-i18n="dash.tasks">Задач сегодня</div>
+            </div>
+            <div class="stat-trend down">-1</div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="card chart-card">
+            <div class="card-header">
+              <h3 data-i18n="dash.revenue_chart">Доходы по месяцам</h3>
+            </div>
+            <canvas id="revenue-chart" height="220"></canvas>
+          </div>
+          <div class="card funnel-card">
+            <div class="card-header">
+              <h3 data-i18n="dash.funnel">Воронка продаж</h3>
+            </div>
+            <div id="funnel-chart" class="funnel"></div>
+          </div>
+        </div>
+
+        <div class="card activity-card">
+          <div class="card-header">
+            <h3 data-i18n="dash.activity">Последние активности</h3>
+          </div>
+          <div id="activity-feed" class="activity-feed"></div>
+        </div>
+      </section>
+
+      <!-- CLIENTS -->
+      <section id="page-clients" class="page">
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input id="clients-search" type="search" data-i18n-placeholder="clients.search" placeholder="Поиск клиентов...">
+          </div>
+          <select id="clients-filter" class="select-sm">
+            <option value="" data-i18n="clients.all">Все статусы</option>
+            <option value="active" data-i18n="status.active">Активный</option>
+            <option value="potential" data-i18n="status.potential">Потенциальный</option>
+            <option value="archive" data-i18n="status.archive">Архив</option>
+          </select>
+          <button class="btn btn-sm btn-outline" id="clients-export-btn" data-i18n="action.export">Экспорт CSV</button>
+          <button class="btn btn-sm btn-outline" id="clients-import-btn" data-i18n="action.import">Импорт</button>
+          <input type="file" id="clients-import-input" accept=".csv" class="hidden">
+        </div>
+        <div class="table-wrap">
+          <table id="clients-table" class="data-table">
+            <thead>
+              <tr>
+                <th data-sort="name" data-i18n="col.name">Имя <span class="sort-arrow">↕</span></th>
+                <th data-sort="company" data-i18n="col.company">Компания <span class="sort-arrow">↕</span></th>
+                <th data-i18n="col.phone">Телефон</th>
+                <th data-i18n="col.email">Email</th>
+                <th data-sort="status" data-i18n="col.status">Статус <span class="sort-arrow">↕</span></th>
+                <th data-sort="city" data-i18n="col.city">Город <span class="sort-arrow">↕</span></th>
+                <th data-i18n="col.actions">Действия</th>
+              </tr>
+            </thead>
+            <tbody id="clients-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- DEALS -->
+      <section id="page-deals" class="page">
+        <div class="kanban" id="kanban-board">
+          <div class="kanban-col" data-status="new">
+            <div class="kanban-col-header">
+              <span class="col-dot new-dot"></span>
+              <span class="col-title" data-i18n="deal.new">Новая</span>
+              <span class="col-count" id="col-count-new">0</span>
+            </div>
+            <div class="kanban-cards" id="col-new"></div>
+            <button class="add-card-btn" data-col="new" data-i18n="deal.add">+ Добавить сделку</button>
+          </div>
+          <div class="kanban-col" data-status="working">
+            <div class="kanban-col-header">
+              <span class="col-dot working-dot"></span>
+              <span class="col-title" data-i18n="deal.working">В работе</span>
+              <span class="col-count" id="col-count-working">0</span>
+            </div>
+            <div class="kanban-cards" id="col-working"></div>
+            <button class="add-card-btn" data-col="working" data-i18n="deal.add">+ Добавить сделку</button>
+          </div>
+          <div class="kanban-col" data-status="review">
+            <div class="kanban-col-header">
+              <span class="col-dot review-dot"></span>
+              <span class="col-title" data-i18n="deal.review">На проверке</span>
+              <span class="col-count" id="col-count-review">0</span>
+            </div>
+            <div class="kanban-cards" id="col-review"></div>
+            <button class="add-card-btn" data-col="review" data-i18n="deal.add">+ Добавить сделку</button>
+          </div>
+          <div class="kanban-col" data-status="won">
+            <div class="kanban-col-header">
+              <span class="col-dot won-dot"></span>
+              <span class="col-title" data-i18n="deal.won">Закрыта (выиграна)</span>
+              <span class="col-count" id="col-count-won">0</span>
+            </div>
+            <div class="kanban-cards" id="col-won"></div>
+            <button class="add-card-btn" data-col="won" data-i18n="deal.add">+ Добавить сделку</button>
+          </div>
+          <div class="kanban-col" data-status="lost">
+            <div class="kanban-col-header">
+              <span class="col-dot lost-dot"></span>
+              <span class="col-title" data-i18n="deal.lost">Закрыта (проиграна)</span>
+              <span class="col-count" id="col-count-lost">0</span>
+            </div>
+            <div class="kanban-cards" id="col-lost"></div>
+            <button class="add-card-btn" data-col="lost" data-i18n="deal.add">+ Добавить сделку</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TASKS -->
+      <section id="page-tasks" class="page">
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input id="tasks-search" type="search" data-i18n-placeholder="tasks.search" placeholder="Поиск задач...">
+          </div>
+          <select id="tasks-filter-priority" class="select-sm">
+            <option value="" data-i18n="tasks.all_priorities">Все приоритеты</option>
+            <option value="high" data-i18n="priority.high">Высокий</option>
+            <option value="medium" data-i18n="priority.medium">Средний</option>
+            <option value="low" data-i18n="priority.low">Низкий</option>
+          </select>
+          <select id="tasks-filter-status" class="select-sm">
+            <option value="" data-i18n="tasks.all_statuses">Все</option>
+            <option value="active" data-i18n="tasks.active">Активные</option>
+            <option value="done" data-i18n="tasks.done">Выполненные</option>
+          </select>
+        </div>
+        <div id="tasks-list" class="tasks-list"></div>
+      </section>
+
+      <!-- CALENDAR -->
+      <section id="page-calendar" class="page">
+        <div class="cal-toolbar">
+          <button id="cal-prev" class="icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <h2 id="cal-title" class="cal-title"></h2>
+          <button id="cal-next" class="icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div class="cal-view-btns">
+            <button class="btn btn-sm active" id="cal-month-btn" data-i18n="cal.month">Месяц</button>
+            <button class="btn btn-sm" id="cal-week-btn" data-i18n="cal.week">Неделя</button>
+          </div>
+        </div>
+        <div id="cal-grid" class="cal-grid"></div>
+      </section>
+
+      <!-- ANALYTICS -->
+      <section id="page-analytics" class="page">
+        <div class="analytics-grid">
+          <div class="card">
+            <div class="card-header"><h3 data-i18n="analytics.monthly">Выручка по месяцам</h3></div>
+            <canvas id="analytics-revenue" height="240"></canvas>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3 data-i18n="analytics.funnel">Конверсия воронки</h3></div>
+            <canvas id="analytics-funnel" height="240"></canvas>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3 data-i18n="analytics.top_clients">Топ клиентов по сделкам</h3></div>
+            <div id="top-clients-list" class="top-clients"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3 data-i18n="analytics.activity">Активность по дням</h3></div>
+            <canvas id="analytics-activity" height="240"></canvas>
+          </div>
+        </div>
+        <div class="export-section">
+          <button class="btn btn-outline" id="export-json-btn" data-i18n="action.export_json">Экспорт базы (JSON)</button>
+          <button class="btn btn-outline" id="import-json-btn" data-i18n="action.import_json">Импорт базы (JSON)</button>
+          <input type="file" id="import-json-input" accept=".json" class="hidden">
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- MODALS -->
+<div id="modal-overlay" class="modal-overlay hidden">
+  <div class="modal" id="modal-box">
+    <div class="modal-header">
+      <h2 id="modal-title"></h2>
+      <button class="icon-btn" id="modal-close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container" class="toast-container"></div>
+
+<script src="db.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
