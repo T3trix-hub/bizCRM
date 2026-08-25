@@ -119,6 +119,7 @@ body {
 .app {
   display: flex;
   height: 100vh;
+  height: 100dvh; /* dvh — учитывает динамическую панель iOS Safari */
   overflow: hidden;
 }
 
@@ -283,6 +284,7 @@ body {
   flex: 1;
   overflow-y: auto;
   padding: 24px;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ============ PAGES ============ */
@@ -385,10 +387,12 @@ select {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
-  font-size: 13.5px;
+  font-size: 16px; /* минимум 16px — иначе iOS зумит при фокусе */
   font-family: inherit;
   transition: border-color var(--transition);
   outline: none;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 input:focus, textarea:focus, select:focus { border-color: var(--accent); }
@@ -651,7 +655,10 @@ textarea { resize: vertical; min-height: 80px; }
   gap: 14px;
   overflow-x: auto;
   padding-bottom: 16px;
-  min-height: calc(100vh - 160px);
+  min-height: calc(100dvh - 160px);
+  /* Плавный скролл на iOS */
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
 }
 
 .kanban-col {
@@ -662,7 +669,8 @@ textarea { resize: vertical; min-height: 80px; }
   border-radius: var(--radius);
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 160px);
+  max-height: calc(100dvh - 160px);
+  scroll-snap-align: start;
 }
 
 .kanban-col-header {
@@ -1211,29 +1219,129 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 @media (max-width: 768px) {
+  /* Sidebar — выезжает поверх контента */
   .sidebar {
     position: fixed;
     top: 0; left: 0; bottom: 0;
     transform: translateX(-100%);
     z-index: 200;
+    width: 260px;
   }
   .sidebar.open {
     transform: translateX(0);
-    box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.4);
   }
   .sidebar-overlay.active { display: block; }
   .sidebar-close-btn { display: flex; }
   .burger { display: flex; }
+
+  /* Layout */
   .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .page-container { padding: 16px; }
-  .topbar { padding: 0 16px; }
+  .page-container { padding: 14px; }
+  .topbar { padding: 0 14px; }
   .toolbar { gap: 6px; }
+
+  /* Stat cards компактнее */
+  .stat-card { padding: 14px; gap: 10px; }
+  .stat-value { font-size: 20px; }
+  .stat-icon { width: 36px; height: 36px; }
+  .stat-icon svg { width: 16px; height: 16px; }
+  .stat-trend { display: none; } /* скрываем тренд — нет места */
+
+  /* Kanban — горизонтальный скролл, колонки уже */
+  .kanban { gap: 10px; padding-bottom: 20px; }
+  .kanban-col { width: 240px; }
+
+  /* Таблица клиентов — скрываем лишние колонки */
+  .data-table th:nth-child(4),
+  .data-table td:nth-child(4),
+  .data-table th:nth-child(6),
+  .data-table td:nth-child(6) { display: none; }
+
+  /* Toolbar — поиск на всю ширину */
+  .search-wrap { min-width: 100%; order: -1; }
+  .toolbar { flex-wrap: wrap; }
+
+  /* Модал — на всю ширину снизу (sheet-style) */
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal {
+    max-width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 92vh;
+  }
+
+  /* Календарь — тулбар в 2 строки */
+  .cal-toolbar { gap: 8px; }
+  .cal-view-btns { margin-left: 0; }
+  .cal-title { flex: 1; text-align: center; min-width: unset; font-size: 15px; }
+
+  /* Календарь — ячейки меньше */
+  .cal-day { min-height: 60px; padding: 4px; }
+  .cal-day-num { font-size: 11px; }
+  .cal-event { font-size: 9px; padding: 1px 3px; }
+  .cal-weekday { font-size: 10px; padding: 7px 0; letter-spacing: 0; }
+
+  /* Задачи — кнопки всегда видны на тач */
+  .task-actions { opacity: 1; }
+
+  /* Воронка — лейбл короче */
+  .funnel-label { width: 90px; font-size: 11px; }
+
+  /* Toast — центрируем */
+  .toast-container { right: 12px; left: 12px; bottom: 16px; align-items: center; }
+  .toast { max-width: 100%; width: 100%; }
 }
 
 @media (max-width: 480px) {
-  .stats-grid { grid-template-columns: 1fr; }
+  /* Stats — 1 колонка */
+  .stats-grid { grid-template-columns: 1fr; gap: 8px; }
+  .stat-trend { display: none; }
+
+  /* Инфо-грид в модале */
   .client-info-grid { grid-template-columns: 1fr; }
   .analytics-grid { grid-template-columns: 1fr; }
-  .cal-title { min-width: unset; font-size: 14px; }
-  .auth-card { padding: 28px 20px; }
+
+  /* Auth */
+  .auth-card { padding: 24px 18px; }
+  .auth-title { font-size: 20px; }
+
+  /* Topbar */
+  .topbar-title { font-size: 14px; }
+  .topbar-actions .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+  /* Календарь — очень узкие ячейки */
+  .cal-day { min-height: 48px; padding: 3px; }
+  .cal-day-num { font-size: 10px; }
+  .cal-day.today .cal-day-num { width: 20px; height: 20px; font-size: 10px; }
+  .cal-event { display: none; } /* события прячем, оставляем только точки */
+  .cal-day-events::before {
+    content: '';
+    display: block;
+  }
+  /* Показываем точку если есть события */
+  .cal-day-events:not(:empty)::after {
+    content: '●';
+    font-size: 6px;
+    color: var(--accent);
+    display: block;
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  /* Канбан колонки ещё уже */
+  .kanban-col { width: 200px; }
+  .deal-card { padding: 10px; }
+  .deal-card-title { font-size: 12px; }
+  .deal-card-amount { font-size: 13px; }
+
+  /* Toolbar — кнопки иконками */
+  .toolbar .btn-sm { font-size: 11px; padding: 5px 8px; }
+
+  /* Модал footer кнопки в колонку */
+  .modal-footer { flex-direction: column-reverse; }
+  .modal-footer .btn { width: 100%; justify-content: center; }
+
+  /* Задачи */
+  .task-meta { gap: 6px; }
+  .task-item { padding: 12px; }
 }
